@@ -10,6 +10,30 @@
                 displayValue: true,
             });
         }
+
+        function downloadBarcode() {
+            var svg = document.getElementById("barcode");
+            var svgData = new XMLSerializer().serializeToString(svg);
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext("2d");
+            var img = new Image();
+
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                var pngFile = canvas.toDataURL("image/png");
+
+                var downloadLink = document.createElement("a");
+                downloadLink.href = pngFile;
+                downloadLink.download = "barcode.png";
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            };
+
+            img.src = "data:image/svg+xml;base64," + btoa(svgData);
+        }
     </script>
     <style>
         body {
@@ -52,6 +76,21 @@
         svg {
             margin-top: 20px;
         }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
     </style>
 </head>
 <body>
@@ -64,6 +103,7 @@
         <div>
             <svg id="barcode"></svg>
         </div>
+        <button onclick="downloadBarcode()">Download Barcode</button>
     </div>
 </body>
 </html>
